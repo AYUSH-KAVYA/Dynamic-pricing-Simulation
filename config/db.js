@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    const uri = process.env.MONGO_URI || 'mongodb+srv://ayush-kr:NkPC2pOY4r61eMz9@cluster0.9ai6fwr.mongodb.net/flipkart';
+    const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000,
     });
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
