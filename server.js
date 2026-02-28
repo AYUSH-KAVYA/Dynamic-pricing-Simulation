@@ -1,11 +1,10 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
-// Load env vars
-dotenv.config();
+// Load env vars from .env file (optional — on Vercel, env vars come from dashboard)
+try { require('dotenv').config(); } catch (e) { /* dotenv not needed in production */ }
 
 const app = express();
 
