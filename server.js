@@ -13,6 +13,12 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static('public'));
 
+// Ensure DB connection before API routes (critical for serverless)
+app.use('/api', async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({
