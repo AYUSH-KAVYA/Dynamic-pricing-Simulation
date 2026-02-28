@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Pricing Simulator</title>
+  <meta name="description"
+    content="Interactive dynamic pricing simulation tool for e-commerce — simulate revenue, profit, and market share with real-time charts.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header__left">
+      <h1 class="header__title">📊 Dynamic Pricing Simulator</h1>
+      <p class="header__subtitle">Data-driven pricing analysis powered by real market data</p>
+    </div>
+    <div class="header__right">
+      <div class="data-badge" id="dataBadge" style="display:none;">
+        <span class="data-badge__dot"></span>
+        <span class="data-badge__text" id="dataBadgeText">Loading data...</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+        <span class="theme-toggle__icon" id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== MAIN LAYOUT ========== -->
+  <div class="dashboard">
+
+    <!-- ===== SIDEBAR: Configuration Panel ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__header">
+        <h2>⚙️ Configuration</h2>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">◀</button>
+      </div>
+
+      <form id="simulationForm" onsubmit="return false;">
+
+        <!-- Product Inputs -->
+        <fieldset class="input-group">
+          <legend>🏷️ Product</legend>
+          <div class="field">
+            <label for="initialPrice">Initial Price (₹)</label>
+            <input type="number" id="initialPrice" value="999" min="1" step="1" required>
+          </div>
+          <div class="field">
+            <label for="unitCost">Unit Cost (₹)</label>
+            <input type="number" id="unitCost" value="400" min="0" step="1" required>
+          </div>
+          <div class="field">
+            <label for="initialInventory">Initial Inventory</label>
+            <input type="number" id="initialInventory" value="500" min="1" step="1" required>
+          </div>
+        </fieldset>
+
+        <!-- Demand Inputs -->
+        <fieldset class="input-group">
+          <legend>📈 Demand</legend>
+          <div class="field">
+            <label for="baseDemand">Base Demand</label>
+            <input type="number" id="baseDemand" value="200" min="1" step="1" required>
+          </div>
+          <div class="field">
+            <label for="alpha">Elasticity (α)</label>
+            <input type="number" id="alpha" value="2.0" min="0" step="0.1" required>
+          </div>
+          <div class="field">
+            <label for="referencePrice">Reference Price (₹)</label>
+            <input type="number" id="referencePrice" value="999" min="1" step="1" required>
+          </div>
+        </fieldset>
+
+        <!-- Competition Inputs -->
+        <fieldset class="input-group">
+          <legend>🏪 Competition</legend>
+          <div class="field">
+            <label for="competitorPrice">Competitor Price (₹)</label>
+            <input type="number" id="competitorPrice" value="950" min="0" step="1" required>
+          </div>
+          <div class="field">
+            <label for="gamma">Reaction Rate (γ)</label>
+            <input type="number" id="gamma" value="0.3" min="0" max="1" step="0.05" required>
+          </div>
+          <div class="field">
+            <label for="beta">Market Sensitivity (β)</label>
+            <input type="number" id="beta" value="0.5" min="0" step="0.1" required>
+          </div>
+        </fieldset>
+
+        <!-- Simulation Controls -->
+        <fieldset class="input-group">
+          <legend>🎮 Simulation</legend>
+          <div class="field">
+            <label for="simulationDays">Number of Days</label>
+            <input type="number" id="simulationDays" value="30" min="1" max="365" step="1" required>
+          </div>
+          <div class="field">
+            <label for="strategy">Strategy</label>
+            <select id="strategy">
+              <option value="fixed">Static (Fixed Price)</option>
+              <option value="dynamic" selected>Inventory-Based</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="competitorModel">Competitor Model</label>
+            <select id="competitorModel">
+              <option value="reactive" selected>Reactive</option>
+              <option value="aggressive">Aggressive</option>
+              <option value="static">Static</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="adjustmentRate">Price Adjustment (%)</label>
+            <input type="number" id="adjustmentRate" value="5" min="0" max="50" step="0.5" required>
+          </div>
+        </fieldset>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button type="button" class="btn btn--primary" id="runBtn" onclick="runSimulation()">
+            <span class="btn__icon">▶</span> Run Simulation
+          </button>
+          <button type="button" class="btn btn--secondary" onclick="resetForm()">
+            <span class="btn__icon">↺</span> Reset
+          </button>
+        </div>
+
+      </form>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main">
+
+      <!-- Status Bar -->
+      <div class="status-bar" id="statusBar" style="display:none;">
+        <span class="status-bar__text" id="statusText"></span>
+      </div>
+
+      <!-- KPI Cards -->
+      <section class="kpi-section" id="kpiSection">
+        <div class="kpi-card" id="kpiRevenue">
+          <div class="kpi-card__icon">💰</div>
+          <div class="kpi-card__value" id="kpiRevenueValue">—</div>
+          <div class="kpi-card__label">Total Revenue</div>
+        </div>
+        <div class="kpi-card" id="kpiProfit">
+          <div class="kpi-card__icon">📈</div>
+          <div class="kpi-card__value" id="kpiProfitValue">—</div>
+          <div class="kpi-card__label">Total Profit</div>
+        </div>
+        <div class="kpi-card" id="kpiUnits">
+          <div class="kpi-card__icon">📦</div>
+          <div class="kpi-card__value" id="kpiUnitsValue">—</div>
+          <div class="kpi-card__label">Units Sold</div>
+        </div>
+        <div class="kpi-card" id="kpiInventory">
+          <div class="kpi-card__icon">🏭</div>
+          <div class="kpi-card__value" id="kpiInventoryValue">—</div>
+          <div class="kpi-card__label">Final Inventory</div>
+        </div>
+        <div class="kpi-card" id="kpiMarketShare">
+          <div class="kpi-card__icon">🎯</div>
+          <div class="kpi-card__value" id="kpiMarketShareValue">—</div>
+          <div class="kpi-card__label">Avg Market Share</div>
+        </div>
+      </section>
+
+      <!-- Charts -->
+      <section class="charts-section" id="chartsSection">
+        <div class="chart-card">
+          <h3 class="chart-card__title">💰 Revenue over Time</h3>
+          <canvas id="revenueChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-card__title">📦 Inventory over Time</h3>
+          <canvas id="inventoryChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-card__title">💲 Price vs Competitor Price</h3>
+          <canvas id="priceChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3 class="chart-card__title">🎯 Market Share over Time</h3>
+          <canvas id="marketShareChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Day-by-Day Analysis Table -->
+      <section class="analysis-section" id="analysisSection" style="display:none;">
+        <div class="analysis-header">
+          <h2>📋 Day-by-Day Analysis</h2>
+          <div class="analysis-actions">
+            <button class="btn btn--small" onclick="exportCSV()">📥 Export CSV</button>
+          </div>
+        </div>
+        <div class="analysis-table-wrapper">
+          <table class="analysis-table" id="analysisTable">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Price (₹)</th>
+                <th>Competitor (₹)</th>
+                <th>Demand</th>
+                <th>Sales</th>
+                <th>Revenue (₹)</th>
+                <th>Profit (₹)</th>
+                <th>Inventory</th>
+                <th>Market Share</th>
+                <th>Elasticity</th>
+              </tr>
+            </thead>
+            <tbody id="analysisBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Historical Simulations -->
+      <section class="history-section">
+        <div class="history-header">
+          <h2>📜 Past Simulations</h2>
+          <button class="btn btn--small" onclick="loadHistory()">Refresh</button>
+        </div>
+        <div class="history-table-wrapper" id="historyWrapper">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Strategy</th>
+                <th>Days</th>
+                <th>Revenue</th>
+                <th>Profit</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr>
+                <td colspan="6" class="empty-state">No simulations yet. Run your first one! 🚀</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

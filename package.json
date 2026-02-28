@@ -1,0 +1,29 @@
+{
+  "name": "dynamic-pricing-simulation",
+  "version": "1.0.0",
+  "description": "An interactive simulator under price given by user",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shubhansh28/Dynamic-pricing-Simulation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Shubhansh28/Dynamic-pricing-Simulation/issues"
+  },
+  "homepage": "https://github.com/Shubhansh28/Dynamic-pricing-Simulation#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.3",
+    "simple-statistics": "^7.8.8"
+  }
+}
