@@ -7,11 +7,14 @@ const dayDataSchema = new mongoose.Schema(
         competitorPrice: Number,
         demand: Number,
         sales: Number,
+        lostSales: Number,
         revenue: Number,
         profit: Number,
+        lostRevenue: Number,
         inventory: Number,
         marketShare: Number,
         elasticity: Number,
+        restocked: Number,
     },
     { _id: false }
 );
@@ -39,35 +42,29 @@ const simulationSchema = new mongoose.Schema(
         beta: { type: Number, required: true },
         gamma: { type: Number, required: true },
 
-        // Strategy
-        strategy: {
-            type: String,
-            enum: ['fixed', 'dynamic'],
-            default: 'fixed',
-        },
+        // Strategy — open string to allow any strategy name
+        strategy: { type: String, default: 'fixed' },
         adjustmentRate: { type: Number, default: 0.05 },
         inventoryThreshold: { type: Number, default: 20 },
         demandThreshold: { type: Number, default: 10 },
+        targetMargin: { type: Number, default: 0.20 },
 
-        // Restocking
+        // Cyclical inventory policy
+        reorderPoint: { type: Number, default: 0 },
+        restockQuantity: { type: Number, default: 0 },
+        leadTime: { type: Number, default: 3 },
+
+        // Legacy restocking fields
         restockEnabled: { type: Boolean, default: false },
         restockAmount: { type: Number, default: 0 },
         restockInterval: { type: Number, default: 7 },
 
-        // Competitor model
-        competitorModel: {
-            type: String,
-            enum: ['reactive', 'aggressive', 'static'],
-            default: 'reactive',
-        },
+        // Competitor model — open string
+        competitorModel: { type: String, default: 'reactive' },
         competitorDelta: { type: Number, default: 5 },
 
         // Demand model
-        demandModel: {
-            type: String,
-            enum: ['linear', 'log'],
-            default: 'linear',
-        },
+        demandModel: { type: String, default: 'linear' },
         logDemandA: { type: Number, default: 10000 },
         logDemandE: { type: Number, default: 1.5 },
 
@@ -78,8 +75,11 @@ const simulationSchema = new mongoose.Schema(
         totalRevenue: Number,
         totalProfit: Number,
         totalUnitsSold: Number,
+        totalLostSales: Number,
+        totalLostRevenue: Number,
         finalInventory: Number,
         avgMarketShare: Number,
+        priceFloor: Number,
         peakDemandDay: Number,
         peakRevenueDay: Number,
     },
