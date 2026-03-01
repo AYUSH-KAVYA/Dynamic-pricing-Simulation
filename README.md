@@ -25,6 +25,7 @@
 
 - ⚡ **Live Demo** → https://dynamic-pricing-simulation.vercel.app
 - 📁 **GitHub** → https://github.com/Shubhansh28/Dynamic-pricing-Simulation
+- 💻 **Demo video Link** → https://drive.google.com/file/d/1Lswyav_FhZv_sDEKmfkNJrChCzBxXJ--/view?usp=sharing
 - 🍃 **Database** → MongoDB Atlas
 - ⚙️ **Backend** → Node.js + Express
 
@@ -140,60 +141,30 @@ BASE URL: https://dynamic-pricing-simulation.vercel.app
 
 ## `[10]` 📦 Development Checkpoints
 
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 1 — Research & Planning</b></summary>
-<br/>
-
+### ✅ Checkpoint 1 — Research & Planning
 - Defined economic formulas: demand elasticity, competitor reaction, profit, market share, cost-plus floor.
 - Selected Flipkart dataset from Kaggle for real-world pricing data.
 
-</details>
-
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 2 — Backend Development</b></summary>
-<br/>
-
+### ✅ Checkpoint 2 — Backend Development
 - Built Node.js/Express REST API with 6 endpoints.
 - Created 7 modular engine files: `demand` · `competitor` · `inventory` · `revenue` · `marketShare` · `pricing` · `simulate`
 - Connected MongoDB Atlas for data storage.
 
-</details>
-
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 3 — Frontend Development</b></summary>
-<br/>
-
+### ✅ Checkpoint 3 — Frontend Development
 - Built dark/light glassmorphism dashboard using Vanilla HTML/CSS/JS.
 - Chart.js time-series charts, animated KPI cards, Day-by-Day Analysis table, CSV export.
 
-</details>
-
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 4 — Model Training</b></summary>
-<br/>
-
+### ✅ Checkpoint 4 — Model Training
 - Implemented `learning/trainer.js` — runs OLS linear regression on 20,000+ Flipkart products.
 - Auto-learns **α** (price elasticity) · **β** (market sensitivity) · **γ** (competitor reaction rate) on page load.
 
-</details>
-
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 5 — Model Integration</b></summary>
-<br/>
-
+### ✅ Checkpoint 5 — Model Integration
 - Wired auto-train → form fill on page load.
 - Simulation results feed charts, analysis table, and MongoDB history simultaneously.
 
-</details>
-
-<details open>
-<summary>&nbsp;<b>✅ Checkpoint 6 — Deployment</b></summary>
-<br/>
-
+### ✅ Checkpoint 6 — Deployment
 - Deployed to Vercel with `vercel.json` configuration.
 - MongoDB connection cached for serverless environment to handle cold starts.
-
-</details>
 
 ---
 
