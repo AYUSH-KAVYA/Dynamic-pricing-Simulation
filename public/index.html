@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Pricing Simulator</title>
   <meta name="description"
-    content="Interactive dynamic pricing simulation tool for e-commerce — simulate revenue, profit, and market share with real-time charts.">
+    content="Interactive dynamic pricing simulation tool for e-commerce — simulate revenue, profit, market share, and inventory cycles with real-time charts.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
@@ -20,7 +20,7 @@
   <header class="header">
     <div class="header__left">
       <h1 class="header__title">📊 Dynamic Pricing Simulator</h1>
-      <p class="header__subtitle">Data-driven pricing analysis powered by real market data</p>
+      <p class="header__subtitle">Profit-Constrained Cyclical Economic Engine</p>
     </div>
     <div class="header__right">
       <div class="data-badge" id="dataBadge" style="display:none;">
@@ -34,13 +34,16 @@
   </header>
 
   <!-- ========== MAIN LAYOUT ========== -->
-  <div class="dashboard">
+  <div class="dashboard" id="dashboard">
+
+    <!-- Floating expand button (visible only when sidebar is collapsed) -->
+    <button class="sidebar-expand" id="sidebarExpand" onclick="toggleSidebar()" title="Open Configuration">▶</button>
 
     <!-- ===== SIDEBAR: Configuration Panel ===== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar__header">
         <h2>⚙️ Configuration</h2>
-        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">◀</button>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Collapse sidebar">◀</button>
       </div>
 
       <form id="simulationForm" onsubmit="return false;">
@@ -50,15 +53,19 @@
           <legend>🏷️ Product</legend>
           <div class="field">
             <label for="initialPrice">Initial Price (₹)</label>
-            <input type="number" id="initialPrice" value="999" min="1" step="1" required>
+            <input type="number" id="initialPrice" value="1400" min="1" step="1" required>
           </div>
           <div class="field">
             <label for="unitCost">Unit Cost (₹)</label>
-            <input type="number" id="unitCost" value="400" min="0" step="1" required>
+            <input type="number" id="unitCost" value="1184" min="0" step="1" required>
+          </div>
+          <div class="field">
+            <label for="targetMargin">Target Margin (%)</label>
+            <input type="number" id="targetMargin" value="20" min="0" max="100" step="1" required>
           </div>
           <div class="field">
             <label for="initialInventory">Initial Inventory</label>
-            <input type="number" id="initialInventory" value="500" min="1" step="1" required>
+            <input type="number" id="initialInventory" value="400000" min="1" step="1" required>
           </div>
         </fieldset>
 
@@ -67,15 +74,15 @@
           <legend>📈 Demand</legend>
           <div class="field">
             <label for="baseDemand">Base Demand</label>
-            <input type="number" id="baseDemand" value="200" min="1" step="1" required>
+            <input type="number" id="baseDemand" value="95000" min="1" step="1" required>
           </div>
           <div class="field">
             <label for="alpha">Elasticity (α)</label>
-            <input type="number" id="alpha" value="2.0" min="0" step="0.1" required>
+            <input type="number" id="alpha" value="15" min="0" step="0.5" required>
           </div>
           <div class="field">
             <label for="referencePrice">Reference Price (₹)</label>
-            <input type="number" id="referencePrice" value="999" min="1" step="1" required>
+            <input type="number" id="referencePrice" value="1350" min="1" step="1" required>
           </div>
         </fieldset>
 
@@ -84,15 +91,32 @@
           <legend>🏪 Competition</legend>
           <div class="field">
             <label for="competitorPrice">Competitor Price (₹)</label>
-            <input type="number" id="competitorPrice" value="950" min="0" step="1" required>
+            <input type="number" id="competitorPrice" value="1330" min="0" step="1" required>
           </div>
           <div class="field">
             <label for="gamma">Reaction Rate (γ)</label>
-            <input type="number" id="gamma" value="0.3" min="0" max="1" step="0.05" required>
+            <input type="number" id="gamma" value="0.25" min="0" max="1" step="0.05" required>
           </div>
           <div class="field">
             <label for="beta">Market Sensitivity (β)</label>
-            <input type="number" id="beta" value="0.5" min="0" step="0.1" required>
+            <input type="number" id="beta" value="1.2" min="0" step="0.1" required>
+          </div>
+        </fieldset>
+
+        <!-- Inventory Policy -->
+        <fieldset class="input-group">
+          <legend>📦 Inventory Policy</legend>
+          <div class="field">
+            <label for="reorderPoint">Reorder Point (ROP)</label>
+            <input type="number" id="reorderPoint" value="100000" min="0" step="1000" required>
+          </div>
+          <div class="field">
+            <label for="restockQuantity">Restock Quantity</label>
+            <input type="number" id="restockQuantity" value="250000" min="0" step="1000" required>
+          </div>
+          <div class="field">
+            <label for="leadTime">Lead Time (days)</label>
+            <input type="number" id="leadTime" value="3" min="0" max="30" step="1" required>
           </div>
         </fieldset>
 
@@ -107,20 +131,22 @@
             <label for="strategy">Strategy</label>
             <select id="strategy">
               <option value="fixed">Static (Fixed Price)</option>
-              <option value="dynamic" selected>Inventory-Based</option>
+              <option value="dynamic">Inventory-Based</option>
+              <option value="StableProfit" selected>Stable Profitable Growth</option>
+              <option value="penetration">Market Penetration</option>
             </select>
           </div>
           <div class="field">
             <label for="competitorModel">Competitor Model</label>
             <select id="competitorModel">
-              <option value="reactive" selected>Reactive</option>
+              <option value="reactive" selected>Reactive (±20% clamped)</option>
               <option value="aggressive">Aggressive</option>
               <option value="static">Static</option>
             </select>
           </div>
           <div class="field">
             <label for="adjustmentRate">Price Adjustment (%)</label>
-            <input type="number" id="adjustmentRate" value="5" min="0" max="50" step="0.5" required>
+            <input type="number" id="adjustmentRate" value="3" min="0" max="50" step="0.5" required>
           </div>
         </fieldset>
 
@@ -172,6 +198,16 @@
           <div class="kpi-card__value" id="kpiMarketShareValue">—</div>
           <div class="kpi-card__label">Avg Market Share</div>
         </div>
+        <div class="kpi-card" id="kpiLostSales">
+          <div class="kpi-card__icon">⚠️</div>
+          <div class="kpi-card__value" id="kpiLostSalesValue">—</div>
+          <div class="kpi-card__label">Total Lost Sales</div>
+        </div>
+        <div class="kpi-card" id="kpiLostRevenue">
+          <div class="kpi-card__icon">📉</div>
+          <div class="kpi-card__value" id="kpiLostRevenueValue">—</div>
+          <div class="kpi-card__label">Lost Revenue</div>
+        </div>
       </section>
 
       <!-- Charts -->
@@ -192,6 +228,7 @@
           <h3 class="chart-card__title">🎯 Market Share over Time</h3>
           <canvas id="marketShareChart"></canvas>
         </div>
+
       </section>
 
       <!-- Day-by-Day Analysis Table -->
@@ -211,8 +248,10 @@
                 <th>Competitor (₹)</th>
                 <th>Demand</th>
                 <th>Sales</th>
+                <th>Lost Sales</th>
                 <th>Revenue (₹)</th>
                 <th>Profit (₹)</th>
+                <th>Lost Revenue (₹)</th>
                 <th>Inventory</th>
                 <th>Market Share</th>
                 <th>Elasticity</th>

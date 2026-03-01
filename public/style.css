@@ -178,6 +178,11 @@ body {
   display: grid;
   grid-template-columns: 320px 1fr;
   min-height: calc(100vh - 72px);
+  transition: grid-template-columns var(--transition);
+}
+
+.dashboard.sidebar-hidden {
+  grid-template-columns: 0 1fr;
 }
 
 /* --- Sidebar --- */
@@ -196,6 +201,38 @@ body {
   width: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* Floating expand button — visible only when sidebar is collapsed */
+.sidebar-expand {
+  display: none;
+  position: fixed;
+  top: 88px;
+  left: 12px;
+  z-index: 200;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition);
+}
+
+.sidebar-expand:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.sidebar.collapsed~* .sidebar-expand,
+body.sidebar-collapsed .sidebar-expand {
+  display: flex;
 }
 
 .sidebar__header {
@@ -437,12 +474,27 @@ body {
 }
 
 /* --- KPI Cards --- */
+/* 12-col subgrid: top 4 cards × 3 cols = 12, bottom 3 cards × 4 cols = 12 */
 .kpi-section {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
+
+.kpi-section .kpi-card:nth-child(1),
+.kpi-section .kpi-card:nth-child(2),
+.kpi-section .kpi-card:nth-child(3),
+.kpi-section .kpi-card:nth-child(4) {
+  grid-column: span 3;
+}
+
+.kpi-section .kpi-card:nth-child(5),
+.kpi-section .kpi-card:nth-child(6),
+.kpi-section .kpi-card:nth-child(7) {
+  grid-column: span 4;
+}
+
 
 .kpi-card {
   background: var(--bg-card);
@@ -483,6 +535,14 @@ body {
 
 .kpi-card:nth-child(5)::before {
   background: var(--gradient-5);
+}
+
+.kpi-card:nth-child(6)::before {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+
+.kpi-card:nth-child(7)::before {
+  background: linear-gradient(135deg, #ef4444, #ec4899);
 }
 
 .kpi-card:hover {
@@ -763,7 +823,7 @@ body {
 /* --- Responsive --- */
 @media (max-width: 1200px) {
   .kpi-section {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }
 

@@ -6,9 +6,6 @@ const Simulation = require('../models/Simulation');
 /**
  * POST /api/simulate
  * Run a new pricing simulation
- *
- * Body: all simulation parameters (see Simulation model)
- * Returns: { success, data: { timeSeries, kpis, simulationId } }
  */
 router.post('/', async (req, res, next) => {
     try {
@@ -32,6 +29,12 @@ router.post('/', async (req, res, next) => {
             restockEnabled = false,
             restockAmount = 0,
             restockInterval = 7,
+            // ── NEW: Cyclical Inventory Policy ──
+            reorderPoint = 0,
+            restockQuantity = 0,
+            leadTime = 3,
+            // ── NEW: Cost-Plus Floor ──
+            targetMargin = 0.20,
             competitorModel = 'reactive',
             competitorDelta = 5,
             demandModel = 'linear',
@@ -51,7 +54,6 @@ router.post('/', async (req, res, next) => {
             throw err;
         }
 
-        // Run simulation engine
         const config = {
             initialPrice,
             competitorPrice,
@@ -70,6 +72,10 @@ router.post('/', async (req, res, next) => {
             restockEnabled,
             restockAmount,
             restockInterval,
+            reorderPoint,
+            restockQuantity,
+            leadTime,
+            targetMargin,
             competitorModel,
             competitorDelta,
             demandModel,
@@ -79,7 +85,7 @@ router.post('/', async (req, res, next) => {
 
         const { timeSeries, kpis } = runSimulation(config);
 
-        // Try to persist to MongoDB (non-blocking — returns results even if DB is down)
+        // Try to persist to MongoDB (non-blocking)
         let simulationId = null;
         try {
             const simulation = await Simulation.create({
@@ -96,11 +102,7 @@ router.post('/', async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            data: {
-                simulationId,
-                timeSeries,
-                kpis,
-            },
+            data: { simulationId, timeSeries, kpis },
         });
     } catch (err) {
         next(err);
@@ -109,7 +111,7 @@ router.post('/', async (req, res, next) => {
 
 /**
  * GET /api/simulate
- * List all past simulations (summary only, no time-series)
+ * List all past simulations (summary only)
  */
 router.get('/', async (req, res, next) => {
     try {
@@ -127,11 +129,7 @@ router.get('/', async (req, res, next) => {
         res.json({
             success: true,
             data: simulations,
-            pagination: {
-                total,
-                page: parseInt(page),
-                pages: Math.ceil(total / parseInt(limit)),
-            },
+            pagination: { total, page: parseInt(page), pages: Math.ceil(total / parseInt(limit)) },
         });
     } catch (err) {
         next(err);
@@ -158,7 +156,6 @@ router.get('/:id', async (req, res, next) => {
 
 /**
  * DELETE /api/simulate/:id
- * Delete a simulation
  */
 router.delete('/:id', async (req, res, next) => {
     try {
