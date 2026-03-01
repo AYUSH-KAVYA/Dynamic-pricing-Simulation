@@ -25,7 +25,7 @@
 
 - ⚡ **Live Demo** → https://dynamic-pricing-simulation.vercel.app
 - 📁 **GitHub** → https://github.com/Shubhansh28/Dynamic-pricing-Simulation
-- 💻 **Demo video Link** → https://drive.google.com/file/d/1Lswyav_FhZv_sDEKmfkNJrChCzBxXJ--/view?usp=sharing
+- 💻 **Demo Video and PPT Doc Link** → 
 - 🍃 **Database** → MongoDB Atlas
 - ⚙️ **Backend** → Node.js + Express
 
