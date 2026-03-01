@@ -1,5 +1,3 @@
-<div align="center">
-
 ```
 ██████╗ ██╗   ██╗███╗   ██╗ █████╗ ███╗   ███╗██╗ ██████╗
 ██╔══██╗╚██╗ ██╔╝████╗  ██║██╔══██╗████╗ ████║██║██╔════╝
@@ -25,17 +23,10 @@
 
 ### *Where Economics Meets Intelligence. Simulate. Learn. Price Smarter.*
 
-<br/>
-
-[![Live Demo](https://img.shields.io/badge/⚡%20LIVE%20DEMO-Visit%20Now-6366f1?style=for-the-badge&logoColor=white)](https://dynamic-pricing-simulation.vercel.app)
-&nbsp;
-[![GitHub](https://img.shields.io/badge/📁%20SOURCE-GitHub-0f172a?style=for-the-badge&logo=github)](https://github.com/Shubhansh28/Dynamic-pricing-Simulation)
-&nbsp;
-[![Powered by](https://img.shields.io/badge/🍃%20MongoDB-Atlas-00ED64?style=for-the-badge)](https://mongodb.com)
-&nbsp;
-[![Node.js](https://img.shields.io/badge/⚙️%20Node.js-Express-339933?style=for-the-badge)](https://nodejs.org)
-
-<br/>
+- ⚡ **Live Demo** → https://dynamic-pricing-simulation.vercel.app
+- 📁 **GitHub** → https://github.com/Shubhansh28/Dynamic-pricing-Simulation
+- 🍃 **Database** → MongoDB Atlas
+- ⚙️ **Backend** → Node.js + Express
 
 ```
 ╔════════════════════════════════════════════════════════════╗
@@ -44,20 +35,14 @@
 ╚════════════════════════════════════════════════════════════╝
 ```
 
-</div>
-
-<br/>
-
 ---
 
 ## `[01]` ⚡ Problem Statement
 
-> **"Most pricing decisions are made using static spreadsheets — we change that."**
+- 🎯 **Problem** — Lack of environment for predictive pricing simulation and experimentation.
+- 🏪 **Who Suffers** — e-commerce Managers · Revenue Operations Teams
 
-| | |
-|---|---|
-| 🎯 **Problem** | Lack of environment for predictive pricing simulation and experimentation. |
-| 🏪 **Who Suffers** | e-commerce Managers · Revenue Operations Teams |
+
 
 In competitive e-commerce markets, pricing decisions directly impact revenue, market share, and inventory turnover. However, most pricing decisions are made using static spreadsheets or limited historical data analysis, which carries significant financial risk without the ability to simulate dynamic market environments.
 
@@ -234,13 +219,8 @@ BASE URL: https://dynamic-pricing-simulation.vercel.app
 
 ## `[12]` 🚀 Demo & Links
 
-<div align="center">
-
-| 🌐 Live Demo | 💻 GitHub |
-|:---:|:---:|
-| [dynamic-pricing-simulation.vercel.app](https://dynamic-pricing-simulation.vercel.app) | [Shubhansh28/Dynamic-pricing-Simulation](https://github.com/Shubhansh28/Dynamic-pricing-Simulation) |
-
-</div>
+- 🌐 **Live Demo** → https://dynamic-pricing-simulation.vercel.app
+- 💻 **GitHub** → https://github.com/Shubhansh28/Dynamic-pricing-Simulation
 
 ---
 
@@ -294,8 +274,4 @@ BASE URL: https://dynamic-pricing-simulation.vercel.app
 
 ---
 
-<div align="center">
-
 *Built with ❤️ during a 24-hour hackathon*
-
-</div>
